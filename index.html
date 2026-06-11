@@ -219,17 +219,15 @@
         <div style="font-size:10px;color:#353a50;margin-top:4px">URL del script para subir imágenes a Drive</div>
       </div>
 
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <button onclick="settingsSave()" style="flex:1;background:#1a3a2a;border:1px solid #2a5a3a;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#6dbf8a;cursor:pointer">Guardar</button>
-      </div>
-      <div style="display:flex;gap:6px;margin-bottom:14px">
+      <div style="display:flex;gap:6px;margin-bottom:10px">
         <button onclick="settingsExport()" style="flex:1;background:#1a2035;border:1px solid #1e2a4a;border-radius:8px;padding:10px;font-size:11px;font-weight:600;color:#7aa2d4;cursor:pointer">📥 Exportar</button>
         <button onclick="document.getElementById('cfg-import-input').click()" style="flex:1;background:#1a2035;border:1px solid #1e2a4a;border-radius:8px;padding:10px;font-size:11px;font-weight:600;color:#7aa2d4;cursor:pointer">📤 Importar</button>
         <input id="cfg-import-input" type="file" accept=".json" style="display:none" onchange="settingsImport(this.files[0])">
         <button onclick="settingsShareLink()" style="flex:1;background:#2a1a3a;border:1px solid #3a2a5a;border-radius:8px;padding:10px;font-size:11px;font-weight:600;color:#b08ad4;cursor:pointer">🔗 Compartir</button>
       </div>
-      <div style="border-top:1px solid #1e1f25;padding-top:12px;display:flex">
-        <button onclick="settingsClear()" style="background:none;border:1px solid #2a1a1a;border-radius:8px;padding:9px 14px;font-size:11px;font-weight:600;color:#6a3a3a;cursor:pointer">Borrar todo</button>
+      <div style="display:flex;gap:8px">
+        <button onclick="settingsSave()" style="flex:1;background:#1a3a2a;border:1px solid #2a5a3a;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#6dbf8a;cursor:pointer">Guardar</button>
+        <button onclick="settingsClear()" style="flex:1;background:#1a1215;border:1px solid #2a1a1a;border-radius:10px;padding:12px;font-size:13px;font-weight:600;color:#6a3a3a;cursor:pointer">Borrar todo</button>
       </div>
 
     </div>
