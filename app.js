@@ -7538,6 +7538,46 @@ function settingsExport() {
   _toast('✓ Configuración exportada.', 'ok');
 }
 
+function settingsShareLink() {
+  var server=_getConnectorUrl();
+  if(!server){ _toast('Configura primero la URL del servidor en Ajustes.','error'); return; }
+  var data={
+    version:1,
+    server:server,
+    user:localStorage.getItem(CONNECTOR_USER_KEY)||'',
+    drive:_resolveUploadUrl(),
+    aliases:_getAliases(),
+    hrZones:localStorage.getItem('customHRZones')||'',
+    hrMethod:localStorage.getItem('hr-method')||'',
+    hrLactate:localStorage.getItem('hr-lactate-value')||'',
+    hrMaxHr:localStorage.getItem('hr-maxhr-value')||'',
+    hrFcrMax:localStorage.getItem('hr-fcr-max')||'',
+    hrFcrRest:localStorage.getItem('hr-fcr-rest')||'',
+    hrZonesInput:localStorage.getItem('hr-zones-input')||'',
+    shareOpts:localStorage.getItem('garminShareOpts')||'',
+    customPresets:localStorage.getItem('garminCustomPresets')||'',
+    textPresets:localStorage.getItem('garminTextPresets')||'',
+    hiddenCols:{}
+  };
+  for(var i=0;i<localStorage.length;i++){
+    var key=localStorage.key(i);
+    if(key.startsWith('_colsHidden_')) data.hiddenCols[key]=localStorage.getItem(key);
+  }
+  var url=server.replace(/\/+$/,'')+'/config/share';
+  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.shareId){
+        var shareUrl=window.location.origin+window.location.pathname+'?config='+res.shareId;
+        if(navigator.clipboard){navigator.clipboard.writeText(shareUrl);}
+        _toast('✓ Enlace copiado al portapapeles: '+shareUrl,'ok');
+      }else{
+        _toast('Error: '+(res.error||'respuesta inesperada'),'error');
+      }
+    })
+    .catch(function(err){_toast('Error de red: '+err.message,'error');});
+}
+
 function settingsImport(file) {
   if(!file) return;
   var reader=new FileReader();
@@ -9897,6 +9937,40 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(_ensurePanels, 0);
 }
+// ── Auto-import config from shared link ──
+(function(){
+  var m=window.location.search.match(/[?&]config=([^&]+)/);
+  if(m){
+    var shareId=m[1];
+    var server=_getConnectorUrl();
+    if(server){
+      fetch(server.replace(/\/+$/,'')+'/config/share/'+encodeURIComponent(shareId))
+        .then(function(r){return r.json();})
+        .then(function(data){
+          if(data.error) return;
+          if(data.server) localStorage.setItem(CONNECTOR_URL_KEY,data.server);
+          if(data.user) localStorage.setItem(CONNECTOR_USER_KEY,data.user);
+          if(data.drive) localStorage.setItem(DRIVE_UPLOAD_URL_KEY,data.drive);
+          if(data.aliases) localStorage.setItem(CONNECTOR_ALIASES_KEY,JSON.stringify(data.aliases));
+          if(data.hrZones) localStorage.setItem('customHRZones',data.hrZones);
+          if(data.hrMethod) localStorage.setItem('hr-method',data.hrMethod);
+          if(data.hrLactate) localStorage.setItem('hr-lactate-value',data.hrLactate);
+          if(data.hrMaxHr) localStorage.setItem('hr-maxhr-value',data.hrMaxHr);
+          if(data.hrFcrMax) localStorage.setItem('hr-fcr-max',data.hrFcrMax);
+          if(data.hrFcrRest) localStorage.setItem('hr-fcr-rest',data.hrFcrRest);
+          if(data.hrZonesInput) localStorage.setItem('hr-zones-input',data.hrZonesInput);
+          if(data.shareOpts) localStorage.setItem('garminShareOpts',data.shareOpts);
+          if(data.customPresets) localStorage.setItem('garminCustomPresets',data.customPresets);
+          if(data.textPresets) localStorage.setItem('garminTextPresets',data.textPresets);
+          if(data.hiddenCols) Object.keys(data.hiddenCols).forEach(function(k){localStorage.setItem(k,data.hiddenCols[k]);});
+          _toast('✓ Configuración importada desde enlace compartido.','ok');
+          history.replaceState(null,'',window.location.pathname);
+          setTimeout(function(){window.location.reload();},1500);
+        })
+        .catch(function(){});
+    }
+  }
+})();
 // Click-to-edit activity name on preview title
 document.addEventListener('click', function(e){
   var title=e.target.closest('.share-preview-wrap .sc-title');
