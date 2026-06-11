@@ -219,8 +219,11 @@
         <div style="font-size:10px;color:#353a50;margin-top:4px">URL del script para subir imágenes a Drive</div>
       </div>
 
-      <div style="display:flex;gap:8px">
-        <button onclick="settingsSave()" style="flex:1;background:#1a3a2a;border:1px solid #2a5a3a;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#6dbf8a;cursor:pointer">Guardar</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="settingsSave()" style="flex:1;min-width:80px;background:#1a3a2a;border:1px solid #2a5a3a;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#6dbf8a;cursor:pointer">Guardar</button>
+        <button onclick="settingsExport()" style="flex:1;min-width:80px;background:#1a2035;border:1px solid #1e2a4a;border-radius:10px;padding:11px;font-size:12px;font-weight:600;color:#7aa2d4;cursor:pointer">📥 Exportar</button>
+        <button onclick="document.getElementById('cfg-import-input').click()" style="flex:1;min-width:80px;background:#1a2035;border:1px solid #1e2a4a;border-radius:10px;padding:11px;font-size:12px;font-weight:600;color:#7aa2d4;cursor:pointer">📤 Importar</button>
+        <input id="cfg-import-input" type="file" accept=".json" style="display:none" onchange="settingsImport(this.files[0])">
         <button onclick="settingsClear()" style="background:#1a1215;border:1px solid #2a1a1a;border-radius:10px;padding:11px 16px;font-size:12px;font-weight:600;color:#7a3a3a;cursor:pointer">Borrar todo</button>
       </div>
 

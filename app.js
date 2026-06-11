@@ -7106,12 +7106,9 @@ function _ensurePanels() {
       +'<input id="cfg-server" type="text" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:13px;box-sizing:border-box" placeholder="https://tu-servidor.railway.app"></div>'
       +'<div style="margin-bottom:14px"><div style="font-size:12px;color:#8890a0;margin-bottom:4px">URL de Google Drive (opcional)</div>'
       +'<input id="cfg-drive" type="text" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:13px;box-sizing:border-box" placeholder="https://drive.google.com/drive/folders/..."></div>'
-      +'<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">'
+      +'<div style="display:flex;gap:8px;margin-bottom:14px">'
       +'<button id="cfg-load-btn" onclick="settingsLoadFromServer()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:12px;cursor:pointer">Cargar</button>'
-      +'<button id="cfg-save-btn" onclick="settingsSave()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#2a5f3a;color:#eaeaea;font-size:12px;cursor:pointer">Guardar</button>'
-      +'<button onclick="settingsExport()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#1e2a4a;color:#eaeaea;font-size:12px;cursor:pointer">📥 Exportar</button>'
-      +'<button onclick="document.getElementById(\'cfg-import-input\').click()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#1e2a4a;color:#eaeaea;font-size:12px;cursor:pointer">📤 Importar</button>'
-      +'<input id="cfg-import-input" type="file" accept=".json" style="display:none" onchange="settingsImport(this.files[0])"></div>'
+      +'<button id="cfg-save-btn" onclick="settingsSave()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#2a5f3a;color:#eaeaea;font-size:12px;cursor:pointer">Guardar</button></div>'
       +'<div id="cfg-saved-users" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>';
     document.body.appendChild(s);
   }
