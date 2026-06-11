@@ -4,6 +4,9 @@ Visualizador de entrenamientos de Garmin Connect. Carga un `.fit`/`.zip`, conéc
 
 **Demo:** https://Alejandrlucena.github.io/garmin-laps
 
+> **About del repositorio (GitHub):**  
+> *Visor y editor interactivo de entrenamientos Garmin. Carga archivos .fit, conéctate al servidor MCP o pega JSON. Tabla con vueltas, zonas de FC, grupos personalizables por arrastre, edición en tiempo real, filtros y exportación a imagen.*
+
 ---
 
 ## Deportes soportados
@@ -41,6 +44,9 @@ Pega el JSON de una actividad que te haya dado Claude o ChatGPT y pulsa **▶ Re
 
 ### Opción 4 — HTML de Garmin Connect
 Pega el HTML de la página de splits de una actividad de Garmin Connect y pulsa **▶ Renderizar**. Útil para ver actividades de otros usuarios sin tener el `.fit`.
+
+### Opción 5 — JSON de Claude / ChatGPT
+Pega el JSON de una actividad que te haya dado un asistente y pulsa **▶ Renderizar**. Acepta tanto el formato plano como el estructurado de Garmin.
 
 No requiere instalación, login ni backend. Todo corre en el navegador.
 
@@ -104,6 +110,31 @@ La agrupación replica fielmente lo que muestra Garmin Connect:
 ## Agrupar por km
 
 El selector **Agrupar por km** permite reagrupar las vueltas en bloques del tamaño que elijas (0.5, 1, 2, 5 km o valor personalizado). Cada bloque muestra una fila resumen colapsable con los stats agregados y las vueltas originales debajo. Funciona en todos los deportes.
+
+---
+
+## Grupos personalizados
+
+Además de la agrupación automática por intervalos, puedes **crear grupos a medida** arrastrando vueltas:
+
+- Activa el modo edición (**✏️**) y usa el icono `☰` para arrastrar una vuelta sobre otra — se agrupan automáticamente.
+- Los grupos personalizados son colapsables y muestran una fila resumen con los mismos stats (distancia, tiempo, ritmo, FC, zonas) que los grupos automáticos.
+- Puedes **renombrarlos** con doble clic en el título.
+- Los botones `↥` / `↧` en cada fila permiten meterla en el grupo anterior o siguiente sin arrastrar.
+- El botón **⊟** deshace el grupo y devuelve las vueltas a su estado individual.
+- Todas las acciones tienen **deshacer/rehacer** (`Cmd/Ctrl+Z`).
+
+---
+
+## Filtro por duración
+
+Junto al botón **✏️** hay un campo de texto que permite **filtrar vueltas por cualquier valor** de la tabla (tiempo, distancia, ritmo, velocidad, FC…):
+
+- Escribe, por ejemplo, `2:00.0` o `4:00.0` para mostrar/ocultar vueltas cuyo tiempo contenga ese valor.
+- Las vueltas que coinciden se **ocultan** automáticamente; la tabla y los totales se recalculan.
+- Un contador `↩ N ocultas ▾` muestra las vueltas filtradas y permite restaurarlas individualmente.
+- El filtro persiste mientras no se cierre la actividad y forma parte del historial de deshacer.
+- Útil para limpiar la vista eliminando vueltas de transición o descansos cortos sin perderlos del historial.
 
 ---
 
@@ -220,7 +251,7 @@ Sin dependencias de servidor. Todo corre en el navegador. Usa:
 |---------|-----------|
 | `index.html` | Shell de la SPA (228 líneas) |
 | `style.css` | Todos los estilos (dark theme, responsive) |
-| `app.js` | Toda la lógica de la aplicación (~7600 líneas) |
+| `app.js` | Toda la lógica de la aplicación (~9900 líneas) |
 | `fit-parser.js` | Parser de archivos `.fit` (minified) |
 | `GarminDriveUpload_AppScript.js` | Código para el Google Apps Script de Drive |
 
