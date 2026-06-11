@@ -7568,7 +7568,7 @@ function settingsShareLink() {
     .then(function(r){return r.json();})
     .then(function(res){
       if(res.shareId){
-        var shareUrl=window.location.origin+window.location.pathname+'?config='+res.shareId;
+        var shareUrl=window.location.origin+window.location.pathname+'?config='+res.shareId+'&server='+encodeURIComponent(server);
         if(navigator.clipboard){navigator.clipboard.writeText(shareUrl);}
         _toast('✓ Enlace copiado al portapapeles: '+shareUrl,'ok');
       }else{
@@ -9940,9 +9940,10 @@ if (document.readyState === 'loading') {
 // ── Auto-import config from shared link ──
 (function(){
   var m=window.location.search.match(/[?&]config=([^&]+)/);
+  var s=window.location.search.match(/[?&]server=([^&]+)/);
   if(m){
     var shareId=m[1];
-    var server=_getConnectorUrl();
+    var server=s ? decodeURIComponent(s[1]) : _getConnectorUrl();
     if(server){
       fetch(server.replace(/\/+$/,'')+'/config/share/'+encodeURIComponent(shareId))
         .then(function(r){return r.json();})
