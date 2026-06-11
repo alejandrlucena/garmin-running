@@ -7106,9 +7106,12 @@ function _ensurePanels() {
       +'<input id="cfg-server" type="text" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:13px;box-sizing:border-box" placeholder="https://tu-servidor.railway.app"></div>'
       +'<div style="margin-bottom:14px"><div style="font-size:12px;color:#8890a0;margin-bottom:4px">URL de Google Drive (opcional)</div>'
       +'<input id="cfg-drive" type="text" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:13px;box-sizing:border-box" placeholder="https://drive.google.com/drive/folders/..."></div>'
-      +'<div style="display:flex;gap:8px;margin-bottom:14px">'
+      +'<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">'
       +'<button id="cfg-load-btn" onclick="settingsLoadFromServer()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:12px;cursor:pointer">Cargar</button>'
-      +'<button id="cfg-save-btn" onclick="settingsSave()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#2a5f3a;color:#eaeaea;font-size:12px;cursor:pointer">Guardar</button></div>'
+      +'<button id="cfg-save-btn" onclick="settingsSave()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#2a5f3a;color:#eaeaea;font-size:12px;cursor:pointer">Guardar</button>'
+      +'<button onclick="settingsExport()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#1e2a4a;color:#eaeaea;font-size:12px;cursor:pointer">📥 Exportar</button>'
+      +'<button onclick="document.getElementById(\'cfg-import-input\').click()" style="padding:8px 16px;border-radius:6px;border:1px solid #2a2d35;background:#1e2a4a;color:#eaeaea;font-size:12px;cursor:pointer">📤 Importar</button>'
+      +'<input id="cfg-import-input" type="file" accept=".json" style="display:none" onchange="settingsImport(this.files[0])"></div>'
       +'<div id="cfg-saved-users" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>';
     document.body.appendChild(s);
   }
@@ -7500,6 +7503,73 @@ function settingsClear() {
   _updateConnectorBtnLabel();
   closeSettings();
   _toast('Configuración borrada.', 'info');
+}
+
+function settingsExport() {
+  var data={
+    version:1,
+    exportedAt:new Date().toISOString(),
+    server:_getConnectorUrl(),
+    user:localStorage.getItem(CONNECTOR_USER_KEY)||'',
+    drive:_resolveUploadUrl(),
+    aliases:_getAliases(),
+    hrZones:localStorage.getItem('customHRZones')||'',
+    hrMethod:localStorage.getItem('hr-method')||'',
+    hrLactate:localStorage.getItem('hr-lactate-value')||'',
+    hrMaxHr:localStorage.getItem('hr-maxhr-value')||'',
+    hrFcrMax:localStorage.getItem('hr-fcr-max')||'',
+    hrFcrRest:localStorage.getItem('hr-fcr-rest')||'',
+    hrZonesInput:localStorage.getItem('hr-zones-input')||'',
+    shareOpts:localStorage.getItem('garminShareOpts')||'',
+    customPresets:localStorage.getItem('garminCustomPresets')||'',
+    textPresets:localStorage.getItem('garminTextPresets')||'',
+    hiddenCols:{}
+  };
+  for(var i=0;i<localStorage.length;i++){
+    var key=localStorage.key(i);
+    if(key.startsWith('_colsHidden_')) data.hiddenCols[key]=localStorage.getItem(key);
+  }
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='garmin-laps-config.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  _toast('✓ Configuración exportada.', 'ok');
+}
+
+function settingsImport(file) {
+  if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data||!data.version) throw new Error('Fichero no válido');
+      if(data.server) localStorage.setItem(CONNECTOR_URL_KEY,data.server);
+      if(data.user) localStorage.setItem(CONNECTOR_USER_KEY,data.user);
+      if(data.drive) localStorage.setItem(DRIVE_UPLOAD_URL_KEY,data.drive);
+      if(data.aliases) localStorage.setItem(CONNECTOR_ALIASES_KEY,JSON.stringify(data.aliases));
+      if(data.hrZones) localStorage.setItem('customHRZones',data.hrZones);
+      if(data.hrMethod) localStorage.setItem('hr-method',data.hrMethod);
+      if(data.hrLactate) localStorage.setItem('hr-lactate-value',data.hrLactate);
+      if(data.hrMaxHr) localStorage.setItem('hr-maxhr-value',data.hrMaxHr);
+      if(data.hrFcrMax) localStorage.setItem('hr-fcr-max',data.hrFcrMax);
+      if(data.hrFcrRest) localStorage.setItem('hr-fcr-rest',data.hrFcrRest);
+      if(data.hrZonesInput) localStorage.setItem('hr-zones-input',data.hrZonesInput);
+      if(data.shareOpts) localStorage.setItem('garminShareOpts',data.shareOpts);
+      if(data.customPresets) localStorage.setItem('garminCustomPresets',data.customPresets);
+      if(data.textPresets) localStorage.setItem('garminTextPresets',data.textPresets);
+      if(data.hiddenCols) Object.keys(data.hiddenCols).forEach(function(k){localStorage.setItem(k,data.hiddenCols[k]);});
+      _toast('✓ Configuración importada. Abre de nuevo Ajustes para ver los cambios.','ok');
+      openSettings();
+    }catch(err){
+      _toast('Error al importar: '+err.message,'error');
+    }
+  };
+  reader.readAsText(file);
 }
 
 function _updateConnectorBtnLabel() {
