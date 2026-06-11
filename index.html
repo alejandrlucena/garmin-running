@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<meta name="theme-color" content="#0b0c0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Garmin Laps">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Garmin Laps</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230b0c0f'/><path d='M14,88 Q18,78 28,74 Q40,70 46,62 Q54,52 44,44 Q34,36 22,42 Q14,48 18,56 Q22,62 30,60' fill='none' stroke='%231a1a22' stroke-width='14' stroke-linejoin='round' stroke-linecap='round'/><path d='M14,88 Q18,78 28,74 Q40,70 46,62 Q54,52 44,44 Q34,36 22,42 Q14,48 18,56 Q22,62 30,60' fill='none' stroke='%2336363e' stroke-width='5' stroke-linejoin='round' stroke-linecap='round' stroke-dasharray='40 12 24 8 18 6'/><circle cx='66' cy='34' r='18' fill='%2315171e' stroke='%230a84ff' stroke-width='3'/><polygon points='66,14 69,24 63,24' fill='%230a84ff'/><line x1='66' y1='34' x2='66' y2='22' stroke='%230a84ff' stroke-width='3.5' stroke-linecap='round'/><line x1='66' y1='34' x2='76' y2='38' stroke='%23999' stroke-width='2.5' stroke-linecap='round'/><circle cx='66' cy='34' r='3' fill='%230a84ff'/></svg>">
+<script>
+(function(){
+  var v = Date.now().toString(36);
+  document.write('<link rel="stylesheet" href="style.css?v='+v+'">');
+  document.write('<script src="fit-parser.js?v='+v+'"></scr'+'ipt>');
+  document.write('<script src="app.js?v='+v+'" defer></scr'+'ipt>');
+})();
+</script>
+</head>
+<body>
+<div class="app">
+
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+
+<!-- ── EDITOR ── -->
+<div class="editor">
+  <div class="editor-top">
+    <div class="editor-header">
+      <div style="cursor:pointer" onclick="if(window.clearCache)clearCache();else location.reload()" title="Forzar recarga (limpia caché)">
+        <span class="editor-title">Garmin Laps</span><span class="editor-by">by AlejandrLucena</span>
+      </div>
+      <button class="btn-clear-hdr" onclick="clearJson()" title="Limpiar">✕</button>
+    </div>
+    <div class="action-row-main">
+      <button class="btn btn-render" onclick="render()">▶ Renderizar</button>
+      <button class="btn btn-fit" onclick="document.getElementById('fit-input').click()">📁 Garmin</button>
+      <input type="file" id="fit-input" accept=".fit,.zip" multiple style="display:none" onchange="loadFitOrZip(this)">
+      <button class="btn btn-img" id="btn-img" onclick="saveImg()" style="display:none">Generar imagen</button>
+      <button class="btn btn-copy-img" id="btn-copy-img" onclick="copyImg()" style="display:none">Copiar imagen</button>
+      <button class="btn btn-link-img" id="btn-link-img" onclick="getImageLink()" style="display:none">Obtener link</button>
+      <button class="btn btn-share" id="btn-share" onclick="shareStrava()" style="display:none">Compartir</button>
+    </div>
+    <div class="action-row-filter" id="filter-bar">
+      <input class="filter-input" id="filter-input" type="text" placeholder="Ocultar filas que contengan… ej: Descanso"
+        onkeydown="if(event.key==='Enter')applyFilterRemove()">
+      <button class="btn-filter-ok" onclick="applyFilter()" title="Solo oculta visualmente — NO actualiza medias ni zonas">Ocultar</button>
+      <button class="btn-filter-ok red" onclick="applyFilterRemove()" title="Oculta y recalcula medias, trabajo efectivo y zonas">Quitar</button>
+      <button class="btn-filter-ok green" onclick="showAllRows()">Mostrar todo</button>
+    </div>
+    <div class="compact-bar" id="compact-bar">
+      <span class="compact-lbl">Agrupar cada:</span>
+      <select class="compact-select" id="compact-preset" onchange="onCompactPresetChange()">
+        <option value="0">— Sin agrupar —</option>
+        <option value="1">1 km</option>
+        <option value="2">2 km</option>
+        <option value="5">5 km</option>
+        <option value="10">10 km</option>
+        <option value="25">25 km</option>
+        <option value="custom">Personalizado…</option>
+      </select>
+      <input type="number" class="compact-custom-input" id="compact-custom" min="0.1" step="0.1" placeholder="km"
+        style="display:none" onkeydown="if(event.key==='Enter')applyCompact()">
+      <button class="btn-compact-ok" id="btn-compact-ok" onclick="applyCompact()" style="display:none">Agrupar</button>
+      <button class="btn-compact-reset" id="btn-compact-reset" onclick="resetCompact()" style="display:none">✕ Restablecer</button>
+    </div>
+  </div>
+  <div class="json-wrap" id="json-wrap">
+    <textarea class="json-area" id="json-input" spellcheck="false" autocorrect="off" autocapitalize="off"
+      placeholder="Carga el .fit desde el botón Garmin, o arrastra un archivo aquí"></textarea>
+  </div>
+  <div class="hint">Arrastra un .fit o .zip, o usa el botón Garmin</div>
+  <div class="error-msg" id="error-msg"></div>
+</div>
+
+<!-- ── ACTION BAR ── -->
+<div class="action-bar">
+  <a href="https://connect.garmin.com/app/activities" target="_blank" class="action-btn ab-connect">
+    <span class="action-btn-icon">🌐</span>
+    <span class="action-btn-label">Garmin Connect</span>
+  </a>
+  <div class="action-btn-split ab-zones-split">
+    <button class="split-main" onclick="toggleHRZones()">
+      <span class="action-btn-icon">⚡</span>
+      <span class="action-btn-label">Zonas FC</span>
+    </button>
+    <button class="split-cfg" onclick="openHRZonesConfig()">
+      <span class="split-cfg-icon">⚙</span>
+      <span class="split-cfg-label">Configurar</span>
+    </button>
+  </div>
+  <div class="action-btn-split ab-share">
+    <div class="split-dual">
+      <button class="split-dual-btn" id="btn-drive-bar" onclick="getImageLink()">
+        <span class="action-btn-icon">📤</span>
+        <span class="action-btn-label">Drive</span>
+      </button>
+      <div class="split-dual-sep"></div>
+      <button class="split-dual-btn" id="btn-connector" onclick="openConnectorPanel()">
+        <span class="action-btn-icon" id="connector-btn-icon">🔌</span>
+        <span class="action-btn-label" id="connector-btn-label">Conector</span>
+      </button>
+    </div>
+    <button class="split-cfg" onclick="openSettings()">
+      <span class="split-cfg-icon">⚙</span>
+      <span class="split-cfg-label">Configurar</span>
+    </button>
+  </div>
+</div>
+<div class="prompt-body" id="prompt-body" style="display:none;">
+</div>
+<div class="hr-zones-content" id="hr-zones-content" style="display:none;">
+  <div class="hr-label">Método:</div>
+  <select id="hr-method" onchange="toggleHRMethod()">
+    <option value="lactate" selected>% Umbral de lactato</option>
+    <option value="maxhr">% FC máxima</option>
+    <option value="fcr">% FCR (Karvonen)</option>
+    <option value="manual">Manual (min,max por zona)</option>
+  </select>
+  <div id="hr-lactate-input">
+    <div class="hr-label">Umbral de lactato (ppm):</div>
+    <input type="number" id="hr-lactate-value" placeholder="ej. 160">
+  </div>
+  <div id="hr-maxhr-input" style="display:none;">
+    <div class="hr-label">FC máxima (ppm):</div>
+    <input type="number" id="hr-maxhr-value" placeholder="ej. 188">
+  </div>
+  <div id="hr-fcr-input" style="display:none;">
+    <div class="hr-label">FC máxima (ppm):</div>
+    <input type="number" id="hr-fcr-max" placeholder="ej. 188">
+    <div class="hr-label" style="margin-top:8px;">FC en reposo (ppm):</div>
+    <input type="number" id="hr-fcr-rest" placeholder="ej. 60">
+  </div>
+  <div id="hr-manual-input" style="display:none;">
+    <div class="hr-label">Ingrese 5 líneas: min,max (por zona Z1 a Z5). Ej: 104,120</div>
+    <textarea id="hr-zones-input" rows="5" placeholder="104,120&#10;122,141&#10;143,161&#10;163,181&#10;183,188"></textarea>
+  </div>
+  <button class="btn btn-apply" onclick="applyHRZones()">Aplicar zonas</button>
+  <div class="hr-save-row">
+    <input type="checkbox" id="hr-save-check" checked onchange="onHrSaveCheckChange()">
+    <label for="hr-save-check">Guardar zonas para próximas veces</label>
+  </div>
+</div>
+
+</div><!-- .sidebar -->
+
+<!-- ── OUTPUT ── -->
+<div id="output">
+  <div class="placeholder">
+    <div class="placeholder-icon">⌁</div>
+    <div class="placeholder-title">Sin datos</div>
+    <div class="placeholder-sub">Carga el .fit desde el botón Garmin</div>
+  </div>
+</div>
+
+<!-- ── CONNECTOR PANEL ── -->
+<div id="connector-overlay" onclick="if(event.target===this)closeConnectorPanel()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.80);z-index:1000;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px">
+  <div style="max-width:520px;margin:0 auto;background:#0f1014;border:1px solid #1e1f25;border-radius:14px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #1e1f25">
+      <span style="font-size:13px;font-weight:700;color:#eaeaea">🔌 Actividades del conector</span>
+      <button onclick="closeConnectorPanel()" style="background:none;border:none;color:#555;font-size:20px;cursor:pointer;line-height:1;padding:0 4px">✕</button>
+    </div>
+    <div id="connector-date-wrap" style="padding:8px 12px;border-bottom:1px solid #111318;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <input id="connector-date-from" type="date" title="Desde"
+        style="flex:1;min-width:120px;background:#0c0d11;border:1px solid #1e2130;border-radius:8px;padding:6px 8px;font-size:12px;color:#d0d4de;outline:none;color-scheme:dark">
+      <input id="connector-date-to" type="date" title="Hasta"
+        style="flex:1;min-width:120px;background:#0c0d11;border:1px solid #1e2130;border-radius:8px;padding:6px 8px;font-size:12px;color:#d0d4de;outline:none;color-scheme:dark">
+      <button onclick="_loadConnectorByDate()" style="background:#1a3a28;border:1px solid #2a6040;border-radius:8px;padding:6px 12px;font-size:12px;color:#6fcf97;cursor:pointer;white-space:nowrap">Buscar</button>
+    </div>
+    <div id="connector-type-filter" style="display:none;padding:8px 12px 6px;border-bottom:1px solid #111318;gap:4px;flex-wrap:nowrap">
+      <button class="connector-type-btn active" data-type="" onclick="_setConnectorTypeFilter('')">🗂️ Todo</button>
+      <button class="connector-type-btn" data-type="running" onclick="_setConnectorTypeFilter('running')">🏃 Running</button>
+      <button class="connector-type-btn" data-type="cycling" onclick="_setConnectorTypeFilter('cycling')">🚴 Ciclismo</button>
+      <button class="connector-type-btn" data-type="moto" onclick="_setConnectorTypeFilter('moto')">🏍️ Motorsport 🏎️</button>
+    </div>
+    <div id="connector-search-wrap" style="display:none;padding:8px 12px;border-bottom:1px solid #111318">
+      <input id="connector-search" type="search" placeholder="Buscar actividad…" oninput="_filterConnectorActivities()"
+        style="width:100%;box-sizing:border-box;background:#0c0d11;border:1px solid #1e2130;border-radius:8px;padding:7px 10px;font-size:12px;color:#d0d4de;outline:none;-webkit-appearance:none">
+    </div>
+    <div id="connector-list" style="padding:4px 0;min-height:80px"></div>
+  </div>
+</div>
+
+<div id="settings-overlay" onclick="if(event.target===this)closeSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.80);z-index:1100;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px">
+  <div style="max-width:420px;margin:0 auto;background:#0f1014;border:1px solid #1e1f25;border-radius:14px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #1e1f25">
+      <span style="font-size:13px;font-weight:700;color:#eaeaea">⚙ Configuración</span>
+      <button onclick="closeSettings()" style="background:none;border:none;color:#555;font-size:20px;cursor:pointer;line-height:1;padding:0 4px">✕</button>
+    </div>
+    <div style="padding:18px">
+
+      <div style="margin-bottom:18px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#505870;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Nombre de usuario</label>
+        <div style="display:flex;gap:6px">
+          <input id="cfg-username" type="text" placeholder="tu nombre de usuario" autocomplete="off" autocorrect="off" autocapitalize="off"
+            style="flex:1;min-width:0;background:#0c0d11;border:1px solid #1e2130;border-radius:8px;padding:9px 12px;font-size:13px;color:#d0d4de;outline:none">
+          <button id="cfg-import-btn" onclick="settingsImportUser()" style="background:#1a2035;border:1px solid #1e2130;border-radius:8px;padding:0 14px;font-size:11px;font-weight:700;color:#7aa2d4;cursor:pointer;white-space:nowrap">Importar</button>
+        </div>
+        <div id="cfg-saved-users" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+        <div style="font-size:10px;color:#353a50;margin-top:4px">Alias local — escribe tu nombre y pulsa <b style="color:#4a6a94">Importar</b>, o selecciona uno guardado arriba</div>
+      </div>
+
+      <div style="margin-bottom:6px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#505870;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Servidor Garmin MCP</label>
+        <div style="display:flex;gap:6px">
+          <input id="cfg-server" type="url" placeholder="https://tu-servidor.up.railway.app" autocomplete="off"
+            style="flex:1;min-width:0;background:#0c0d11;border:1px solid #1e2130;border-radius:8px;padding:9px 12px;font-size:12px;color:#d0d4de;outline:none">
+          <button id="cfg-load-btn" onclick="settingsLoadFromServer()" style="background:#1a2035;border:1px solid #1e2130;border-radius:8px;padding:0 14px;font-size:11px;font-weight:700;color:#7aa2d4;cursor:pointer;white-space:nowrap">Cargar</button>
+        </div>
+        <div style="font-size:10px;color:#353a50;margin-top:4px">URL de tu instancia de <a href="https://github.com/Alejandrlucena/garmin-coach-mcp" target="_blank" style="color:#3a5a84">garmin-coach-mcp</a></div>
+      </div>
+
+      <div style="margin-bottom:22px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#505870;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;margin-top:18px">Google Drive (Apps Script)</label>
+        <input id="cfg-drive" type="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"
+          style="width:100%;box-sizing:border-box;background:#0c0d11;border:1px solid #1e2130;border-radius:8px;padding:9px 12px;font-size:12px;color:#d0d4de;outline:none">
+        <div style="font-size:10px;color:#353a50;margin-top:4px">URL del script para subir imágenes a Drive</div>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button onclick="settingsSave()" style="flex:1;background:#1a3a2a;border:1px solid #2a5a3a;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#6dbf8a;cursor:pointer">Guardar</button>
+        <button onclick="settingsClear()" style="background:#1a1215;border:1px solid #2a1a1a;border-radius:10px;padding:11px 16px;font-size:12px;font-weight:600;color:#7a3a3a;cursor:pointer">Borrar todo</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</body>
+</html>
