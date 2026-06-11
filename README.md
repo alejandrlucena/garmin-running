@@ -233,6 +233,16 @@ Al guardar el servidor, la URL de Drive se sincroniza automáticamente desde el 
 4. Despliega como **Aplicación web** (ejecutar como: Yo · acceso: Cualquier usuario)
 5. Copia la URL `/exec` y pégala en ⚙ Configurar
 
+### Exportar / Importar configuración
+
+Puedes exportar toda tu configuración (servidor, Drive, zonas FC, alias, columnas ocultas, presets) a un archivo JSON y compartirlo:
+
+- **📥 Exportar** — descarga `garmin-laps-config.json` con todos los ajustes
+- **📤 Importar** — carga un archivo JSON exportado previamente y restaura toda la configuración
+- **🔗 Compartir** — sube la configuración al servidor MCP y genera un enlace (`?config=xxx&server=...`). Quien abra ese enlace importará automáticamente la configuración, incluso sin haber usado la web antes.
+
+Ideal para que un preparador físico pueda acceder a la web con tu misma configuración sin pasos manuales.
+
 ---
 
 ## Tecnología
