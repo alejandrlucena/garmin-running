@@ -7270,7 +7270,14 @@ function _loadConnectorByDate() {
   if (from) url += '&start_date=' + from;
   if (to)   url += '&end_date=' + to;
   fetch(url)
-    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(r) {
+      if (!r.ok) return r.json().then(function(body) {
+        var msg = body.error || ('HTTP ' + r.status);
+        var fix = body.fix ? '<div style="margin-top:8px;color:#f2c94c;font-size:11px">' + body.fix + '</div>' : '';
+        throw new Error(msg + fix);
+      });
+      return r.json();
+    })
     .then(function(data) {
       var SIN_SPLITS = {strength_training:1,yoga:1,pilates:1,flexibility:1,breathwork:1,meditation:1};
       _connectorActs = (data.activities || []).filter(function(a) { return !SIN_SPLITS[a.activityType]; });
@@ -7306,7 +7313,11 @@ function loadActivityFromConnector(activityId) {
   var base = _getConnectorUrl();
   fetch(base + '/download/' + activityId)
     .then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
+      if (!r.ok) return r.json().then(function(body) {
+        var msg = body.error || ('HTTP ' + r.status);
+        var fix = body.fix ? '<br><span style="color:#f2c94c;font-size:11px">' + body.fix + '</span>' : '';
+        throw new Error(msg + fix);
+      });
       return r.arrayBuffer();
     })
     .then(function(buf) {
