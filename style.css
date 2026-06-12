@@ -37,18 +37,20 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .app.sidebar-collapsed .sidebar .editor-top{margin-bottom:0}
 .app.sidebar-collapsed .sidebar{overflow:hidden;width:0;min-width:0;padding:0;border:none}
 @media(min-width:768px){
-  .app.sidebar-collapsed{grid-template-columns:0 1fr!important}
+  .app.sidebar-collapsed{grid-template-columns:0 0 1fr!important}
   .app.sidebar-collapsed #output{padding-left:22px}
 }
-/* Toggle buttons - vertical edge bars (desktop) / full-width bars (mobile) */
-.btn-toggle-edge{position:absolute;top:0;bottom:0;z-index:99;transform:none;
-  background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
-  width:20px;height:auto;padding:0;font-size:10px;
+/* Toggle buttons */
+.btn-toggle-edge{background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
+  padding:0;font-size:10px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
-.btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32;width:24px}
-.btn-toggle-collapse{right:-20px;border-radius:0 9px 9px 0;box-shadow:2px 0 8px rgba(0,0,0,.3)}
-/* Floating expand button - fixed vertical bar at left edge (desktop) */
+.btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32}
+/* Collapse bar - middle column between sidebar and output (desktop) */
+.btn-toggle-collapse{border:none;border-left:1px solid #2a2a32;border-right:1px solid #2a2a32;
+  width:auto;height:auto;box-shadow:none}
+.btn-toggle-collapse:hover{background:#2a2a32}
+/* Expand button - fixed vertical bar at left edge (desktop) */
 .btn-toggle-expand{display:none}
 .btn-toggle-expand.expand-btn{display:flex;position:fixed;top:0;bottom:0;left:0;z-index:999;transform:none;
   background:#1e1f25;border:1px solid #2a2a32;border-left:none;border-radius:0 9px 9px 0;color:#9aa0a6;
@@ -142,7 +144,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .btn-compact-reset:hover{background:#261a08}
 
 /* ── TEXTAREA ── */
-.json-wrap{position:relative;padding-right:10px}
+.json-wrap{position:relative}
 .json-area{
   display:block;width:100%;
   background:#06070a;border:1px solid #1e1f25;border-radius:10px;
@@ -162,7 +164,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:700;color:#4ade80;letter-spacing:.5px;
   pointer-events:none}
-.json-wrap{position:relative;padding-right:10px}
+.json-wrap{position:relative}
 .hint{font-size:10px;color:#333;margin-top:6px;line-height:1.6}
 .error-msg{color:#e74c3c;font-size:11px;margin-top:8px;line-height:1.5;display:none;
   background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.2);
@@ -944,18 +946,18 @@ tr:not(.group-header):not(.phase-header):not(.custom-group-header):not(.avg-row)
 
 /* ── DESKTOP LAYOUT ── */
 @media(min-width:900px){
-  .app{display:grid;grid-template-columns:400px 1fr;grid-template-rows:100dvh;flex-direction:unset}
-  .sidebar{display:flex;flex-direction:column;border-right:1px solid #1e1f25;height:100dvh;position:sticky;top:0}
+  .app{display:grid;grid-template-columns:400px 20px 1fr;grid-template-rows:100dvh;flex-direction:unset}
+  .sidebar{display:flex;flex-direction:column;border-right:none;height:100dvh;position:sticky;top:0}
   #output{overflow-y:auto;height:100dvh}
   .action-bar{border-top:1px solid #1e1f25;flex-shrink:0;margin-top:auto;padding:10px 16px 12px}
-  .editor{border-bottom:none;border-right:none;flex:1;overflow-y:auto;padding:16px 20px}
+  .editor{border-bottom:none;border-right:1px solid #1e1f25;flex:1;overflow-y:auto;padding:16px 20px}
   .editor-top{gap:8px}
   .action-row-main{grid-template-columns:1fr 1fr}
   .json-area{height:clamp(180px,20vh,280px)}
 }
 
 @media(min-width:1200px){
-  .app{grid-template-columns:420px 1fr}
+  .app{grid-template-columns:420px 20px 1fr}
 }
 
 /* ── CELL EDIT (pace/speed) ── */
