@@ -33,15 +33,15 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .app.sidebar-collapsed .sidebar .action-bar,
 .app.sidebar-collapsed .sidebar .prompt-body,
 .app.sidebar-collapsed .sidebar .hr-zones-content{display:none!important}
-.app.sidebar-collapsed .sidebar .editor{padding:8px 14px;border-bottom:none}
+.app.sidebar-collapsed .sidebar .editor{padding:6px 12px;border-bottom:none}
 .app.sidebar-collapsed .sidebar .editor-top{margin-bottom:0}
 .app.sidebar-collapsed .sidebar .btn-toggle-editor{color:#9aa0a6}
 .app.sidebar-collapsed .sidebar{overflow:hidden}
-.app.sidebar-collapsed .sidebar .editor-header>div:first-child{display:none}
-.app.sidebar-collapsed .sidebar .editor-header .editor-actions .btn-clear-hdr{display:none}
+.app.sidebar-collapsed .sidebar .editor-actions .btn-clear-hdr{display:none}
 @media(min-width:768px){
   .app.sidebar-collapsed{grid-template-columns:0 1fr!important}
   .app.sidebar-collapsed .sidebar{width:0;min-width:0;overflow:hidden;padding:0;border:none}
+  .app.sidebar-collapsed .sidebar .editor-header>div:first-child{display:none}
 }
 
 /* ── BUTTONS ── */
