@@ -5,7 +5,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 
 /* ── LAYOUT ── */
 .app{display:flex;flex-direction:column;min-height:100dvh}
-.sidebar{display:flex;flex-direction:column}
+.sidebar{display:flex;flex-direction:column;position:relative}
 #output{flex:1;background:#0b0c0f;padding-bottom:20px}
 
 /* ── HEADER/EDITOR ── */
@@ -38,23 +38,34 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .app.sidebar-collapsed .sidebar .action-bar,
 .app.sidebar-collapsed .sidebar .prompt-body,
 .app.sidebar-collapsed .sidebar .hr-zones-content,
-.app.sidebar-collapsed .sidebar .btn-toggle-editor-hdr{display:none!important}
+.app.sidebar-collapsed .btn-toggle-collapse{display:none!important}
 .app.sidebar-collapsed .sidebar .editor{padding:4px 8px;border-bottom:none}
 .app.sidebar-collapsed .sidebar .editor-top{margin-bottom:0}
 .app.sidebar-collapsed .sidebar{overflow:hidden;width:0;min-width:0;padding:0;border:none}
 @media(min-width:768px){
   .app.sidebar-collapsed{grid-template-columns:0 1fr!important}
 }
-/* Toggle button - hidden by default, fixed floating when sidebar collapsed */
-.btn-toggle-editor{display:none}
-.btn-toggle-editor.expand-btn{display:flex;position:fixed;top:50%;left:0;z-index:999;transform:translateY(-50%);
+/* Toggle buttons - sidebar edge tabs */
+.btn-toggle-edge{position:absolute;top:50%;z-index:99;transform:translateY(-50%);
+  background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
+  width:20px;height:44px;padding:0;font-size:10px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
+.btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32}
+.btn-toggle-collapse{right:-1px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
+.btn-toggle-collapse:hover{width:24px}
+/* Floating expand button - hidden by default, fixed when sidebar collapsed */
+.btn-toggle-expand{display:none}
+.btn-toggle-expand.expand-btn{display:flex;position:fixed;top:50%;left:0;z-index:999;transform:translateY(-50%);
   background:#1e1f25;border:1px solid #2a2a32;border-left:none;border-radius:0 9px 9px 0;color:#9aa0a6;
   width:20px;height:44px;padding:0;font-size:12px;
   align-items:center;justify-content:center;cursor:pointer;
-  box-shadow:2px 0 8px rgba(0,0,0,.3);transition:background .15s}
-.btn-toggle-editor.expand-btn:hover{background:#2a2a32;color:#eaeaea;width:24px}
+  box-shadow:2px 0 8px rgba(0,0,0,.3);transition:background .15s,width .15s}
+.btn-toggle-expand.expand-btn:hover{background:#2a2a32;color:#eaeaea;width:24px}
 @media(max-width:767px){
-  .btn-toggle-editor.expand-btn{top:auto;bottom:20px;left:16px;transform:none;
+  .btn-toggle-edge{width:18px;height:36px;font-size:9px}
+  .btn-toggle-edge:hover{width:22px}
+  .btn-toggle-expand.expand-btn{top:auto;bottom:20px;left:16px;transform:none;
     width:42px;height:42px;border-radius:50%;border:1px solid #2a2a32;box-shadow:0 2px 8px rgba(0,0,0,.4);
     font-size:16px}
 }

@@ -16,14 +16,14 @@ function toggleEditorCollapse(){
   _updateCollapseIcons(collapsed);
 }
 function _updateCollapseIcons(collapsed){
-  var btnF=document.getElementById('btn-toggle-editor');
-  var btnH=document.getElementById('btn-toggle-editor-hdr');
+  var btnC=document.getElementById('btn-toggle-collapse');
+  var btnE=document.getElementById('btn-toggle-expand');
   var mobile=window.innerWidth<768;
-  if(btnH) btnH.textContent=collapsed?'':(mobile?'▲':'◀');
-  if(btnF){
-    btnF.classList.toggle('expand-btn',collapsed);
-    btnF.textContent='';
-    if(btnF.classList.contains('expand-btn')) btnF.textContent=mobile?'▼':'▶';
+  if(btnC) btnC.style.display=collapsed?'none':'flex';
+  if(btnE){
+    btnE.classList.toggle('expand-btn',collapsed);
+    btnE.textContent=mobile?(collapsed?'▼':'▲'):(collapsed?'▶':'◀');
+    btnE.style.display=collapsed?'flex':'none';
   }
 }
 (function(){
