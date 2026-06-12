@@ -46,7 +46,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
 .btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32}
-.btn-toggle-collapse{right:-1px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
+.btn-toggle-collapse{right:-6px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
 .btn-toggle-collapse:hover{width:24px}
 @media(max-width:767px){
   .btn-toggle-collapse,.btn-toggle-expand{display:none!important}
