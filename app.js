@@ -14,12 +14,15 @@ function toggleEditorCollapse(){
   var collapsed=el.classList.toggle('sidebar-collapsed');
   localStorage.setItem('sidebarCollapsed',collapsed?'1':'');
   var btn=document.getElementById('btn-toggle-editor');
-  if(btn) btn.textContent=collapsed?'▶':'◀';
+  if(btn){
+    btn.textContent=collapsed?'▶':'◀';
+    btn.classList.toggle('expand-btn',collapsed);
+  }
 }
 (function(){
   if(localStorage.getItem('sidebarCollapsed')){
     var el=document.querySelector('.app');
-    if(el){el.classList.add('sidebar-collapsed');var btn=document.getElementById('btn-toggle-editor');if(btn)btn.textContent='▶';}
+    if(el){el.classList.add('sidebar-collapsed');var btn=document.getElementById('btn-toggle-editor');if(btn){btn.textContent='▶';btn.classList.add('expand-btn');}}
   }
 })();
 function _snapRows(actId){

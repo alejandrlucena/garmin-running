@@ -40,15 +40,20 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .app.sidebar-collapsed .sidebar .hr-zones-content{display:none!important}
 .app.sidebar-collapsed .sidebar .editor{padding:4px 8px;border-bottom:none}
 .app.sidebar-collapsed .sidebar .editor-top{margin-bottom:0}
-.app.sidebar-collapsed .sidebar .btn-toggle-editor{color:#9aa0a6;min-height:32px;padding:0 10px;font-size:12px}
-.app.sidebar-collapsed .sidebar{overflow:hidden}
-.app.sidebar-collapsed .sidebar .editor-actions .btn-clear-hdr{display:none}
+.app.sidebar-collapsed .sidebar{overflow:hidden;width:0;min-width:0;padding:0;border:none}
 @media(min-width:768px){
-  .app.sidebar-collapsed{grid-template-columns:40px 1fr!important}
-  .app.sidebar-collapsed .sidebar{width:40px;min-width:40px;overflow:visible;padding:0;border-right:1px solid #1e1f25}
-  .app.sidebar-collapsed .sidebar .editor-header{justify-content:center;padding:8px 0}
-  .app.sidebar-collapsed .sidebar .editor-header>div:first-child{display:none}
-  .app.sidebar-collapsed .sidebar .editor-actions{gap:0}
+  .app.sidebar-collapsed{grid-template-columns:0 1fr!important}
+}
+/* Toggle button - floating circle at the edge of the sidebar */
+.btn-toggle-editor{position:fixed;top:10px;left:380px;z-index:999;
+  background:#1e1f25;border:1px solid #2a2a32;color:#9aa0a6;
+  width:28px;height:28px;padding:0;font-size:10px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);transition:left .2s,background .15s,width .2s,height .2s,font-size .2s}
+.btn-toggle-editor:hover{background:#2a2a32;color:#eaeaea}
+.btn-toggle-editor.expand-btn{left:10px;width:36px;height:36px;font-size:14px}
+@media(max-width:767px){
+  .btn-toggle-editor{top:auto;bottom:16px;left:16px;width:42px;height:42px;font-size:14px}
 }
 
 /* ── BUTTONS ── */
