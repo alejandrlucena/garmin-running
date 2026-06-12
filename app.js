@@ -4607,6 +4607,7 @@ function _captureEl(callback, forDrive){
   const el=document.getElementById('render-target');
   if(!el){_toast('No hay nada que capturar (render-target ausente).','error');if(typeof callback==='function')callback(null);return;}
   const clone=el.cloneNode(true);
+  clone.querySelectorAll('.actividad.editing-on').forEach(a=>a.classList.remove('editing-on'));
   clone.querySelectorAll('.hide-btn,.group-arrow-btn').forEach(b=>b.style.display='none');
   clone.querySelectorAll('.row-hidden').forEach(r=>r.style.display='none');
   clone.querySelectorAll('.lbl').forEach(l=>{l.removeAttribute('contenteditable');l.style.borderBottom='none';l.style.cursor='default';});
@@ -4676,6 +4677,7 @@ function copyImg(){
   navigator.clipboard.write([new ClipboardItem({'image/png':blobPromise})]).then(ok).catch(fail);
 
   const clone=el.cloneNode(true);
+  clone.querySelectorAll('.actividad.editing-on').forEach(a=>a.classList.remove('editing-on'));
   clone.querySelectorAll('.hide-btn').forEach(b=>b.remove());
   clone.querySelectorAll('.row-hidden').forEach(r=>r.style.display='none');
   clone.querySelectorAll('.lbl').forEach(l=>{l.removeAttribute('contenteditable');l.style.borderBottom='none';l.style.cursor='default';});
