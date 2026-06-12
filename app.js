@@ -9,17 +9,17 @@ function _DB(tag){
   console.log.apply(console,args);
 }
 function toggleEditorCollapse(){
-  var el=document.querySelector('.editor');
+  var el=document.querySelector('.app');
   if(!el)return;
-  var collapsed=el.classList.toggle('collapsed');
-  localStorage.setItem('editorCollapsed',collapsed?'1':'');
+  var collapsed=el.classList.toggle('sidebar-collapsed');
+  localStorage.setItem('sidebarCollapsed',collapsed?'1':'');
   var btn=document.getElementById('btn-toggle-editor');
   if(btn) btn.textContent=collapsed?'▶':'◀';
 }
 (function(){
-  if(localStorage.getItem('editorCollapsed')){
-    var el=document.querySelector('.editor');
-    if(el){el.classList.add('collapsed');var btn=document.getElementById('btn-toggle-editor');if(btn)btn.textContent='▶';}
+  if(localStorage.getItem('sidebarCollapsed')){
+    var el=document.querySelector('.app');
+    if(el){el.classList.add('sidebar-collapsed');var btn=document.getElementById('btn-toggle-editor');if(btn)btn.textContent='▶';}
   }
 })();
 function _snapRows(actId){
