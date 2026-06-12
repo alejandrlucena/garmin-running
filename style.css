@@ -21,6 +21,22 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   transition:color .15s,background .15s,border-color .15s;-webkit-appearance:none}
 .btn-clear-hdr:hover{color:#e74c3c;background:#2a1010;border-color:#6a2020}
 .editor-actions{display:flex;gap:8px;flex-shrink:0}
+.btn-toggle-editor{
+  background:transparent;border:1px solid #2a2a32;color:#6a6a72;font-size:10px;font-weight:700;line-height:1;
+  cursor:pointer;padding:0 8px;min-height:28px;border-radius:9px;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:color .15s,background .15s,border-color .15s;-webkit-appearance:none}
+.btn-toggle-editor:hover{color:#9aa0a6;background:#1a1a22;border-color:#3a3a42}
+.editor.collapsed .btn-toggle-editor{color:#9aa0a6}
+.editor.collapsed .editor-top .editor-header .editor-actions .btn-clear-hdr{display:none}
+.editor.collapsed .editor-top .action-row-main,
+.editor.collapsed .editor-top #filter-bar,
+.editor.collapsed .editor-top .compact-bar,
+.editor.collapsed .json-wrap,
+.editor.collapsed .hint,
+.editor.collapsed .error-msg{display:none!important}
+.editor.collapsed .editor-top{margin-bottom:0}
+.editor.collapsed{padding:8px 14px}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;

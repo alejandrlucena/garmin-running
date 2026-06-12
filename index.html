@@ -32,7 +32,10 @@
       <div style="cursor:pointer" onclick="if(window.clearCache)clearCache();else location.reload()" title="Forzar recarga (limpia caché)">
         <span class="editor-title">Garmin Laps</span><span class="editor-by">by AlejandrLucena</span>
       </div>
-      <button class="btn-clear-hdr" onclick="clearJson()" title="Limpiar">✕</button>
+      <div class="editor-actions">
+        <button class="btn-toggle-editor" id="btn-toggle-editor" onclick="toggleEditorCollapse()" title="Colapsar editor">◀</button>
+        <button class="btn-clear-hdr" onclick="clearJson()" title="Limpiar">✕</button>
+      </div>
     </div>
     <div class="action-row-main">
       <button class="btn btn-render" onclick="render()">▶ Renderizar</button>

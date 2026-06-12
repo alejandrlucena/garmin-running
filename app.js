@@ -8,6 +8,20 @@ function _DB(tag){
   if(args.length&&typeof args[0]==='string'){args[0]=p+' '+args[0];}else{Array.prototype.unshift.call(args,p);}
   console.log.apply(console,args);
 }
+function toggleEditorCollapse(){
+  var el=document.querySelector('.editor');
+  if(!el)return;
+  var collapsed=el.classList.toggle('collapsed');
+  localStorage.setItem('editorCollapsed',collapsed?'1':'');
+  var btn=document.getElementById('btn-toggle-editor');
+  if(btn) btn.textContent=collapsed?'▶':'◀';
+}
+(function(){
+  if(localStorage.getItem('editorCollapsed')){
+    var el=document.querySelector('.editor');
+    if(el){el.classList.add('collapsed');var btn=document.getElementById('btn-toggle-editor');if(btn)btn.textContent='▶';}
+  }
+})();
 function _snapRows(actId){
   var rows=[];
   var act=document.getElementById('act-'+actId);
