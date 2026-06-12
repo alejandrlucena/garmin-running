@@ -13,14 +13,26 @@ function toggleEditorCollapse(){
   if(!el)return;
   var collapsed=el.classList.toggle('sidebar-collapsed');
   localStorage.setItem('sidebarCollapsed',collapsed?'1':'');
-  var btn=document.getElementById('btn-toggle-editor');
-  if(btn) btn.classList.toggle('expand-btn',collapsed);
+  _updateCollapseIcons(collapsed);
+}
+function _updateCollapseIcons(collapsed){
+  var btnF=document.getElementById('btn-toggle-editor');
+  var btnH=document.getElementById('btn-toggle-editor-hdr');
+  var mobile=window.innerWidth<768;
+  if(btnH) btnH.textContent=collapsed?'':(mobile?'▲':'◀');
+  if(btnF){
+    btnF.classList.toggle('expand-btn',collapsed);
+    btnF.textContent='';
+    if(btnF.classList.contains('expand-btn')) btnF.textContent=mobile?'▼':'▶';
+  }
 }
 (function(){
-  if(localStorage.getItem('sidebarCollapsed')){
+  var collapsed=!!localStorage.getItem('sidebarCollapsed');
+  if(collapsed){
     var el=document.querySelector('.app');
-    if(el){el.classList.add('sidebar-collapsed');var btn=document.getElementById('btn-toggle-editor');if(btn)btn.classList.add('expand-btn');}
+    if(el) el.classList.add('sidebar-collapsed');
   }
+  _updateCollapseIcons(collapsed);
 })();
 function _snapRows(actId){
   var rows=[];
