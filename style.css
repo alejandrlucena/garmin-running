@@ -69,7 +69,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   box-shadow:2px 0 8px rgba(0,0,0,.3);transition:background .15s,width .15s}
 .btn-toggle-expand.expand-btn:hover{background:#2a2a32;color:#eaeaea;width:24px}
 @media(max-width:767px){
-  .btn-toggle-expand.expand-btn{top:0;left:50%;transform:translateX(-50%);
+  .btn-toggle-expand.expand-btn{top:-1px;left:50%;transform:translateX(-50%);
     width:44px;height:20px;border-radius:0 0 9px 9px;border:1px solid #2a2a32;border-top:none;
     box-shadow:0 2px 6px rgba(0,0,0,.3);font-size:10px}
   .btn-toggle-expand.expand-btn:hover{width:48px}

@@ -19,10 +19,14 @@ function _updateCollapseIcons(collapsed){
   var btnC=document.getElementById('btn-toggle-collapse');
   var btnE=document.getElementById('btn-toggle-expand');
   var mobile=window.innerWidth<768;
-  if(btnC) btnC.style.display=collapsed?'none':'flex';
+  if(btnC){
+    btnC.style.display=collapsed?'none':'flex';
+    if(mobile) btnC.textContent='▲';
+    else btnC.textContent='◀';
+  }
   if(btnE){
     btnE.classList.toggle('expand-btn',collapsed);
-    btnE.textContent=mobile?(collapsed?'▼':'▲'):(collapsed?'▶':'◀');
+    btnE.textContent=mobile?'▼':'▶';
     btnE.style.display=collapsed?'flex':'none';
   }
 }
