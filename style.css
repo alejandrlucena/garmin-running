@@ -38,21 +38,21 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .app.sidebar-collapsed .sidebar{overflow:hidden;width:0;min-width:0;padding:0;border:none}
 @media(min-width:768px){
   .app.sidebar-collapsed{grid-template-columns:0 1fr!important}
+  .app.sidebar-collapsed #output{padding-left:22px}
 }
-/* Toggle buttons - sidebar edge tabs (desktop) / full-width bars (mobile) */
-.btn-toggle-edge{position:absolute;top:50%;z-index:99;transform:translateY(-50%);
+/* Toggle buttons - vertical edge bars (desktop) / full-width bars (mobile) */
+.btn-toggle-edge{position:absolute;top:0;bottom:0;z-index:99;transform:none;
   background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
-  width:20px;height:44px;padding:0;font-size:10px;
+  width:20px;height:auto;padding:0;font-size:10px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
-.btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32}
+.btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32;width:24px}
 .btn-toggle-collapse{right:-1px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
-.btn-toggle-collapse:hover{width:24px}
-/* Floating expand button - fixed tab at left edge (desktop) */
+/* Floating expand button - fixed vertical bar at left edge (desktop) */
 .btn-toggle-expand{display:none}
-.btn-toggle-expand.expand-btn{display:flex;position:fixed;top:50%;left:0;z-index:999;transform:translateY(-50%);
+.btn-toggle-expand.expand-btn{display:flex;position:fixed;top:0;bottom:0;left:0;z-index:999;transform:none;
   background:#1e1f25;border:1px solid #2a2a32;border-left:none;border-radius:0 9px 9px 0;color:#9aa0a6;
-  width:20px;height:44px;padding:0;font-size:12px;
+  width:20px;height:auto;padding:0;font-size:10px;
   align-items:center;justify-content:center;cursor:pointer;
   box-shadow:2px 0 8px rgba(0,0,0,.3);transition:background .15s,width .15s}
 .btn-toggle-expand.expand-btn:hover{background:#2a2a32;color:#eaeaea;width:24px}
