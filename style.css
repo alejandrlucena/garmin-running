@@ -47,14 +47,14 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 }
 /* Toggle button - hidden by default, fixed floating when sidebar collapsed */
 .btn-toggle-editor{display:none}
-.btn-toggle-editor.expand-btn{display:flex;position:fixed;top:10px;left:10px;z-index:999;
+.btn-toggle-editor.expand-btn{display:flex;position:fixed;top:10px;right:10px;z-index:999;
   background:#1e1f25;border:1px solid #2a2a32;color:#9aa0a6;
   width:36px;height:36px;padding:0;font-size:14px;border-radius:50%;
   align-items:center;justify-content:center;cursor:pointer;
   box-shadow:0 2px 8px rgba(0,0,0,.4);transition:background .15s}
 .btn-toggle-editor.expand-btn:hover{background:#2a2a32;color:#eaeaea}
 @media(max-width:767px){
-  .btn-toggle-editor.expand-btn{top:auto;bottom:16px;left:16px;width:42px;height:42px;font-size:14px}
+  .btn-toggle-editor.expand-btn{top:auto;bottom:16px;right:16px;width:42px;height:42px;font-size:14px}
 }
 
 /* ── BUTTONS ── */
