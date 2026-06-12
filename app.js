@@ -21,6 +21,7 @@ function _updateCollapseIcons(collapsed){
   var mobile=window.innerWidth<768;
   if(btnC){
     btnC.style.display=collapsed?'none':'flex';
+    btnC.style.color='#c0c4cc';
     if(mobile) btnC.textContent='▲';
     else btnC.textContent='◀';
   }
@@ -28,6 +29,7 @@ function _updateCollapseIcons(collapsed){
     btnE.classList.toggle('expand-btn',collapsed);
     btnE.textContent=mobile?'▼':'▶';
     btnE.style.display=collapsed?'flex':'none';
+    btnE.style.color='#c0c4cc';
   }
 }
 (function(){
@@ -4242,6 +4244,7 @@ function render(){
       const _lb=document.getElementById('btn-link-img');_lb.style.display='inline-flex';_lb.disabled=false;
       document.getElementById('filter-bar').classList.add('visible');
       _showCompactBar(true); _updateCompactResetBtn();
+      _updateClearBtnState();
       if(window.innerWidth<900)setTimeout(()=>document.getElementById('output').scrollIntoView({behavior:'smooth',block:'start'}),100);
       return;
     }
@@ -4287,6 +4290,7 @@ function render(){
   document.getElementById('filter-bar').classList.add('visible');
   _showCompactBar(true);
   _updateCompactResetBtn();
+  _updateClearBtnState();
   setTimeout(debugDumpTable,200);
   // En móvil, scroll al output
   if(window.innerWidth<900){
@@ -4800,6 +4804,22 @@ document.getElementById('btn-share').style.display='none';
   _showCompactBar(false);
   _lastParsedList = null;
   document.getElementById('json-input').focus();
+  _updateClearBtnState();
+}
+
+function _updateClearBtnState(){
+  var keys = ['cfg-username','cfg-server','cfg-drive'];
+  var hasData = keys.some(function(id){
+    var el = document.getElementById(id);
+    return el && el.value.trim().length > 0;
+  });
+  var btn = document.querySelector('.settings-clear');
+  if(btn){
+    btn.classList.toggle('has-data', hasData);
+    btn.style.color = hasData ? '#ff4444' : '#6a3a3a';
+    btn.style.background = hasData ? '#2f0f0f' : '#1a1215';
+    btn.style.borderColor = hasData ? '#7a2020' : '#2a1a1a';
+  }
 }
 
 /* ── SHARE CARD HELPERS ── */
@@ -6194,7 +6214,9 @@ function loadZip(file) {
             try {
               var json = fitToGarminJson(fitData, fitEntry.name);
               document.getElementById('json-input').value = JSON.stringify(json, null, 2);
+
               render();
+              _updateClearBtnState();
             } catch(ex) { errEl.textContent = 'Error al convertir: ' + ex.message; errEl.style.display = 'block'; }
           });
         } catch(ex) { errEl.textContent = 'Error: ' + ex.message; errEl.style.display = 'block'; }
@@ -6238,6 +6260,7 @@ function loadFit(input) {
           var json = fitToGarminJson(fitData, file.name);
           document.getElementById('json-input').value = JSON.stringify(json, null, 2);
           render();
+          _updateClearBtnState();
         } catch(ex) {
           errEl.textContent = 'Error al convertir: ' + ex.message;
           errEl.style.display = 'block';
@@ -7408,6 +7431,7 @@ function _parseFitBufferConnector(buf, filename) {
         var json = fitToGarminJson(fitData, filename);
         document.getElementById('json-input').value = JSON.stringify(json, null, 2);
         render();
+        _updateClearBtnState();
       } catch(ex) {
         errEl.textContent = 'Error al convertir: ' + ex.message;
         errEl.style.display = 'block';
@@ -7462,7 +7486,13 @@ function openSettings() {
   document.getElementById('cfg-drive').value    = drive;
   _refreshSavedUsersChips();
   document.getElementById('settings-overlay').style.display = 'block';
+  _updateClearBtnState();
   if (server && !drive) settingsLoadFromServer(true);
+  // Live-update clear button state on input
+  ['cfg-username','cfg-server','cfg-drive'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('input', _updateClearBtnState);
+  });
 }
 
 function settingsImportUser() {
@@ -7475,6 +7505,7 @@ function settingsImportUser() {
 
   document.getElementById('cfg-server').value = alias.server;
   document.getElementById('cfg-drive').value  = alias.drive || '';
+  _updateClearBtnState();
   _toast('✓ Configuración de "' + username + '" cargada.', 'ok');
 }
 
@@ -7500,6 +7531,7 @@ function settingsLoadFromServer(silent) {
   _loadConfigFromServer(server).then(function(cfg) {
     if (cfg.driveUrl) {
       document.getElementById('cfg-drive').value = cfg.driveUrl;
+      _updateClearBtnState();
       if (!silent) _toast('✓ Drive URL cargado desde el servidor.', 'ok');
     } else {
       if (!silent) _toast('El servidor no tiene Drive URL guardado aún.', 'info');
@@ -7543,6 +7575,7 @@ function settingsClear() {
   document.getElementById('cfg-username').value = '';
   document.getElementById('cfg-server').value   = '';
   document.getElementById('cfg-drive').value    = '';
+  _updateClearBtnState();
   var wrap = document.getElementById('cfg-saved-users');
   if (wrap) wrap.style.display = 'none';
   _updateConnectorBtnLabel();
@@ -10054,4 +10087,10 @@ document.addEventListener('click', function(e){
   title.addEventListener('blur',_end);
   title.addEventListener('keydown',_key);
 });
+// Init button state on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', _updateClearBtnState);
+} else {
+  _updateClearBtnState();
+}
 

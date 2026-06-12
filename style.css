@@ -20,6 +20,8 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   display:inline-flex;align-items:center;justify-content:center;
   transition:color .15s,background .15s,border-color .15s;-webkit-appearance:none}
 .btn-clear-hdr:hover{color:#e74c3c;background:#2a1010;border-color:#6a2020}
+.btn-clear-hdr.has-data{color:#ff4444;background:#2f0f0f;border-color:#7a2020}
+.btn-clear-hdr.has-data:hover{color:#ff7777;background:#3f1515;border-color:#9a3030}
 .editor-actions{display:flex;gap:8px;flex-shrink:0}
 
 /* ── SIDEBAR COLLAPSE ── */
@@ -41,7 +43,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   .app.sidebar-collapsed #output{padding-left:22px}
 }
 /* Toggle buttons */
-.btn-toggle-edge{background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
+.btn-toggle-edge{background:#1e1f25;border:1px solid #2a2a32;color:#c0c4cc;
   padding:0;font-size:10px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
@@ -54,7 +56,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 /* Expand button - fixed vertical bar at left edge (desktop) */
 .btn-toggle-expand{display:none}
 .btn-toggle-expand.expand-btn{display:flex;position:fixed;top:0;bottom:0;left:0;z-index:999;transform:none;
-  background:#1e1f25;border:1px solid #2a2a32;border-left:none;border-radius:0 9px 9px 0;color:#9aa0a6;
+  background:#1e1f25;border:1px solid #2a2a32;border-left:none;border-radius:0 9px 9px 0;color:#c0c4cc;
   width:20px;height:auto;padding:0;font-size:10px;
   align-items:center;justify-content:center;cursor:pointer;
   box-shadow:2px 0 8px rgba(0,0,0,.3);transition:background .15s,width .15s}
@@ -87,6 +89,9 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .btn-link-img{background:#10201c;border-color:#1f4c42;color:#5eead4;font-size:clamp(10px,2.5vw,12px)}
 .btn-fit  {background:#0d1a14;border-color:#1a3a28;color:#4ade80;font-size:clamp(10px,2.5vw,12px)}
 .btn-clear{background:#180f0f;border-color:#3a1a1a;color:#e74c3c}
+.settings-clear{flex:1;background:#1a1215;border:1px solid #2a1a1a;border-radius:10px;padding:12px;font-size:13px;font-weight:600;color:#6a3a3a;cursor:pointer;transition:color .15s,background .15s,border-color .15s}
+.settings-clear.has-data{background:#2f0f0f;border-color:#7a2020;color:#ff4444}
+.settings-clear.has-data:hover{background:#3f1515;border-color:#9a3030;color:#ff7777}
 .btn-copy {background:#1a1b20;border-color:#2a2b32;color:#9aa0a6}
 
 /* ── ACTION ROWS ── */
