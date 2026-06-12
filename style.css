@@ -38,30 +38,33 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .app.sidebar-collapsed .sidebar{overflow:hidden;width:0;min-width:0;padding:0;border:none}
 @media(min-width:768px){
   .app.sidebar-collapsed{grid-template-columns:0 1fr!important}
+  .app.sidebar-collapsed #output{padding-top:26px}
 }
-/* Toggle buttons - sidebar edge tabs */
-.btn-toggle-edge{position:absolute;top:50%;z-index:99;transform:translateY(-50%);
-  background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
-  width:20px;height:44px;padding:0;font-size:10px;
+/* Toggle buttons - full-width horizontal bars */
+.btn-toggle-edge{background:#1e1f25;border:1px solid #2a2a32;color:#6a6a72;
+  padding:0;font-size:10px;letter-spacing:1px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
+  transition:color .15s,background .15s,border-color .15s,height .15s;-webkit-appearance:none;
+  flex-shrink:0}
 .btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32}
-.btn-toggle-collapse{right:-1px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
-.btn-toggle-collapse:hover{width:24px}
+.btn-toggle-collapse{position:absolute;left:0;right:0;bottom:44px;top:auto;width:100%;
+  height:24px;border-radius:0;border-width:1px 0 0;border-left:none;border-right:none;
+  box-shadow:0 -2px 6px rgba(0,0,0,.2);z-index:99}
+.btn-toggle-collapse:hover{height:28px}
 /* Floating expand button - hidden by default, fixed when sidebar collapsed */
 .btn-toggle-expand{display:none}
-.btn-toggle-expand.expand-btn{display:flex;position:fixed;top:50%;left:0;z-index:999;transform:translateY(-50%);
-  background:#1e1f25;border:1px solid #2a2a32;border-left:none;border-radius:0 9px 9px 0;color:#9aa0a6;
-  width:20px;height:44px;padding:0;font-size:12px;
+.btn-toggle-expand.expand-btn{display:flex;position:fixed;top:0;left:0;z-index:999;transform:none;
+  background:#1e1f25;border:none;border-bottom:1px solid #2a2a32;border-radius:0;color:#9aa0a6;
+  width:100%;height:24px;padding:0;font-size:10px;letter-spacing:1px;
   align-items:center;justify-content:center;cursor:pointer;
-  box-shadow:2px 0 8px rgba(0,0,0,.3);transition:background .15s,width .15s}
-.btn-toggle-expand.expand-btn:hover{background:#2a2a32;color:#eaeaea;width:24px}
+  box-shadow:0 2px 6px rgba(0,0,0,.3);transition:background .15s,height .15s}
+.btn-toggle-expand.expand-btn:hover{background:#2a2a32;color:#eaeaea;height:28px}
 @media(max-width:767px){
   #output{padding-top:22px}
-  .btn-toggle-collapse{right:auto;left:50%;bottom:auto;top:100%;transform:translateX(-50%);
-    width:44px;height:20px;border-radius:0 0 9px 9px;border-right:1px solid #2a2a32;border-top:none;
-    box-shadow:0 2px 6px rgba(0,0,0,.2)}
-  .btn-toggle-collapse:hover{width:48px}
+  .btn-toggle-collapse{position:absolute;left:0;right:0;bottom:auto;top:100%;transform:none;
+    width:100%;height:22px;border-radius:0;border-width:1px 0 0;border-right:none;border-left:none;
+    box-shadow:0 -2px 6px rgba(0,0,0,.2)}
+  .btn-toggle-collapse:hover{height:26px}
   .btn-toggle-expand.expand-btn{position:relative;top:auto;left:auto;z-index:999;transform:none;
     width:100%;height:22px;border:none;border-bottom:1px solid #2a2a32;border-radius:0;
     box-shadow:none;font-size:10px}
