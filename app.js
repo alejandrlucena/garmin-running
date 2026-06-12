@@ -38,6 +38,11 @@ function _updateCollapseIcons(collapsed){
   }
   _updateCollapseIcons(collapsed);
 })();
+window.addEventListener('resize',function(){
+  var el=document.querySelector('.app');
+  var collapsed=el&&el.classList.contains('sidebar-collapsed');
+  _updateCollapseIcons(collapsed);
+});
 function _snapRows(actId){
   var rows=[];
   var act=document.getElementById('act-'+actId);
