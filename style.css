@@ -47,7 +47,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   display:flex;align-items:center;justify-content:center;cursor:pointer;
   transition:color .15s,background .15s,border-color .15s,width .15s;-webkit-appearance:none}
 .btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32;width:24px}
-.btn-toggle-collapse{right:-1px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
+.btn-toggle-collapse{right:-20px;border-radius:0 9px 9px 0;box-shadow:2px 0 8px rgba(0,0,0,.3)}
 /* Floating expand button - fixed vertical bar at left edge (desktop) */
 .btn-toggle-expand{display:none}
 .btn-toggle-expand.expand-btn{display:flex;position:fixed;top:0;bottom:0;left:0;z-index:999;transform:none;
@@ -142,7 +142,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .btn-compact-reset:hover{background:#261a08}
 
 /* ── TEXTAREA ── */
-.json-wrap{position:relative}
+.json-wrap{position:relative;padding-right:10px}
 .json-area{
   display:block;width:100%;
   background:#06070a;border:1px solid #1e1f25;border-radius:10px;
@@ -162,7 +162,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:700;color:#4ade80;letter-spacing:.5px;
   pointer-events:none}
-.json-wrap{position:relative}
+.json-wrap{position:relative;padding-right:10px}
 .hint{font-size:10px;color:#333;margin-top:6px;line-height:1.6}
 .error-msg{color:#e74c3c;font-size:11px;margin-top:8px;line-height:1.5;display:none;
   background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.2);
@@ -944,18 +944,18 @@ tr:not(.group-header):not(.phase-header):not(.custom-group-header):not(.avg-row)
 
 /* ── DESKTOP LAYOUT ── */
 @media(min-width:900px){
-  .app{display:grid;grid-template-columns:460px 1fr;grid-template-rows:100dvh;flex-direction:unset}
+  .app{display:grid;grid-template-columns:400px 1fr;grid-template-rows:100dvh;flex-direction:unset}
   .sidebar{display:flex;flex-direction:column;border-right:1px solid #1e1f25;overflow-y:auto;height:100dvh;position:sticky;top:0}
   #output{overflow-y:auto;height:100dvh}
   .action-bar{border-top:1px solid #1e1f25;flex-shrink:0;margin-top:auto;padding:10px 16px 12px}
-  .editor{border-bottom:none;border-right:none;flex:1;overflow-y:auto;padding:16px 36px 16px 20px}
+  .editor{border-bottom:none;border-right:none;flex:1;overflow-y:auto;padding:16px 20px}
   .editor-top{gap:8px}
   .action-row-main{grid-template-columns:1fr 1fr}
   .json-area{height:clamp(180px,20vh,280px)}
 }
 
 @media(min-width:1200px){
-  .app{grid-template-columns:500px 1fr}
+  .app{grid-template-columns:420px 1fr}
 }
 
 /* ── CELL EDIT (pace/speed) ── */
