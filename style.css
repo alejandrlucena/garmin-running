@@ -48,9 +48,6 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .btn-toggle-edge:hover{color:#eaeaea;background:#2a2a32}
 .btn-toggle-collapse{right:-1px;border-radius:9px 0 0 9px;border-right:none;box-shadow:-2px 0 6px rgba(0,0,0,.2)}
 .btn-toggle-collapse:hover{width:24px}
-@media(max-width:767px){
-  .btn-toggle-collapse,.btn-toggle-expand{display:none!important}
-}
 /* Floating expand button - hidden by default, fixed when sidebar collapsed */
 .btn-toggle-expand{display:none}
 .btn-toggle-expand.expand-btn{display:flex;position:fixed;top:50%;left:0;z-index:999;transform:translateY(-50%);
