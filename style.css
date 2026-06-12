@@ -59,6 +59,7 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
     width:44px;height:20px;border-radius:0 0 9px 9px;border-right:1px solid #2a2a32;border-top:none;
     box-shadow:0 2px 6px rgba(0,0,0,.2)}
   .btn-toggle-collapse:hover{width:48px}
+  .app:not(.sidebar-collapsed) #output{padding-top:24px}
 }
 /* Floating expand button - hidden by default, fixed when sidebar collapsed */
 .btn-toggle-expand{display:none}
