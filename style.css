@@ -29,16 +29,20 @@ body{background:#0b0c0f;color:#eaeaea;font-family:-apple-system,BlinkMacSystemFo
 .btn-toggle-editor:hover{color:#9aa0a6;background:#1a1a22;border-color:#3a3a42}
 
 /* ── SIDEBAR COLLAPSE ── */
-.app.sidebar-collapsed .sidebar .editor > *:not(.editor-header),
+.app.sidebar-collapsed .sidebar .editor > .json-wrap,
+.app.sidebar-collapsed .sidebar .editor > .hint,
+.app.sidebar-collapsed .sidebar .editor > .error-msg,
+.app.sidebar-collapsed .sidebar .editor-top > .action-row-main,
+.app.sidebar-collapsed .sidebar .editor-top > #filter-bar,
+.app.sidebar-collapsed .sidebar .editor-top > .compact-bar,
 .app.sidebar-collapsed .sidebar .action-bar,
 .app.sidebar-collapsed .sidebar .prompt-body,
 .app.sidebar-collapsed .sidebar .hr-zones-content{display:none!important}
-.app.sidebar-collapsed .sidebar .editor{padding:4px 6px;border-bottom:none}
+.app.sidebar-collapsed .sidebar .editor{padding:4px 8px;border-bottom:none}
 .app.sidebar-collapsed .sidebar .editor-top{margin-bottom:0}
 .app.sidebar-collapsed .sidebar .btn-toggle-editor{color:#9aa0a6;min-height:32px;padding:0 10px;font-size:12px}
 .app.sidebar-collapsed .sidebar{overflow:hidden}
 .app.sidebar-collapsed .sidebar .editor-actions .btn-clear-hdr{display:none}
-.app.sidebar-collapsed .sidebar .editor-header>div:first-child>span{font-size:9px}
 @media(min-width:768px){
   .app.sidebar-collapsed{grid-template-columns:40px 1fr!important}
   .app.sidebar-collapsed .sidebar{width:40px;min-width:40px;overflow:visible;padding:0;border-right:1px solid #1e1f25}
