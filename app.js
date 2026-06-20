@@ -232,7 +232,7 @@ function _assignHideKeys(lista){
   });
 }
 const _TIPO_MAP={
-  treadmill_running:'CINTA',running:'ASFALTO',cycling:'BICI',swimming:'NATACIÓN',
+  treadmill_running:'CINTA',running:'ASFALTO',walking:'CINTA',cycling:'BICI',swimming:'NATACIÓN',
   road_running:'ASFALTO',trail_running:'TRAIL',indoor_cycling:'BICI',
   gravel_cycling:'BICI',road_biking:'BICI',mountain_biking:'BICI',track_cycling:'BICI',
   ebike_mountain:'BICI',ebike_road:'BICI',e_bike:'BICI',electric_bike:'BICI',ebike:'BICI',
@@ -4130,6 +4130,8 @@ function fromRawGarmin(raw){
   }
   // MOTO and BICI never use 'carrera' mode — that mode is for continuous running only
   if((tipo==='MOTO'||tipo==='BICI')&&modo==='carrera')modo='intervalos';
+  // Walking siempre como 'carrera' (sin grupos ni resúmenes)
+  if((raw.activity_type||raw.type||'')==='walking')modo='carrera';
 
   return{fecha:fechaFmt,nombre:name,tipo,modo,estructura:null,
     distancia_total:(sumDist2/1000).toFixed(2)+' km',
@@ -6327,10 +6329,11 @@ function fitToGarminJson(fitData, filename) {
                    : subSport === 'trail'           ? 'trail_running'
                    : subSport === 'indoor_cycling'  ? 'indoor_cycling'
                    : subSport === 'mountain'        ? 'mountain_biking'
-                   : subSport === 'road'&&sport==='cycling' ? 'cycling'
-                   : sport    === 'running'         ? 'running'
-                   : sport    === 'cycling'         ? 'cycling'
-                   : (String(session.sport||'')==='81'||sport==='motorcycling'||subSport==='motocross'||subSport==='motorsport'||subSport==='atv') ? 'motorcycling'
+                    : subSport === 'road'&&sport==='cycling' ? 'cycling'
+                    : sport    === 'running'         ? 'running'
+                    : sport    === 'walking'         ? 'walking'
+                    : sport    === 'cycling'         ? 'cycling'
+                    : (String(session.sport||'')==='81'||sport==='motorcycling'||subSport==='motocross'||subSport==='motorsport'||subSport==='atv') ? 'motorcycling'
                    : 'running';
 
   /* ── HR zone boundaries ── */
@@ -6935,9 +6938,35 @@ function _saveAlias(username, serverUrl, driveUrl) {
 function _getConnectorUrl() {
   return _cleanConnectorUrl(localStorage.getItem(CONNECTOR_URL_KEY) || '');
 }
+function _connectorLoginHtml() {
+  var url = _getConnectorUrl();
+  return url ? '<div style="margin-top:8px;color:#f2c94c;font-size:11px">Inicia sesión en <a href="' + url + '" target="_blank" style="color:#7ab8f0;text-decoration:underline">' + url + '</a></div>' : '';
+}
+function _openConnectorLogin() {
+  var url = _getConnectorUrl();
+  if (url) window.open(url, '_blank');
+}
+
+var _connectorLoginState = 'unknown';
+function _setConnectorLoginState(state) {
+  _connectorLoginState = state;
+  var link = document.getElementById('connector-login-link');
+  if (!link) return;
+  if (state === 'active') {
+    link.textContent = '✔ Sesión iniciada';
+    link.className = 'connector-login-btn active';
+  } else if (state === 'relogin') {
+    link.textContent = '🔄 Re-login';
+    link.className = 'connector-login-btn relogin';
+  } else {
+    link.textContent = '🔑 Login';
+    link.className = 'connector-login-btn';
+  }
+}
 
 function _applyServer(serverUrl) {
   localStorage.setItem(CONNECTOR_URL_KEY, serverUrl);
+  _connectorLoginState = 'unknown';
   return _loadConfigFromServer(serverUrl).then(function(cfg) {
     if (cfg.driveUrl) _toast('✓ Configuración cargada.', 'ok');
     else _toast('Servidor guardado. Configura Drive en ⚙ si lo necesitas.', 'info');
@@ -6954,9 +6983,10 @@ function configureConnector() { openSettings(); }
 })();
 
 var _connectorActs = [];
-var _connectorTypeFilter = ''; // '' = todo, 'running', 'cycling', 'moto'
+var _connectorTypeFilter = ''; // '' = todo, 'running', 'walking', 'cycling', 'moto'
 var _RUNNING_TYPES = {running:1,treadmill_running:1,trail_running:1,road_running:1,
   virtual_run:1,track_running:1,indoor_running:1,ultra_run:1};
+var _WALKING_TYPES = {walking:1};
 var _CYCLING_TYPES = {cycling:1,indoor_cycling:1,virtual_ride:1,road_biking:1,
   mountain_biking:1,gravel_cycling:1,bmx:1,recumbent_cycling:1,cyclocross:1,
   hand_cycling:1,track_cycling:1,para_cycling:1,fat_bike:1,
@@ -6972,10 +7002,26 @@ var _CONNECTOR_TIPOS = {
   overland:'Viaje', other_wheeled_transport:'Vehículo', atv:'ATV', auto_racing:'Racing', motocross:'Motocross'
 };
 
+function _renderConnectorFilterBtns() {
+  var wrap = document.getElementById('connector-type-filter');
+  if (!wrap) return;
+  var btns = [
+    { type: '', label: '🗂️ Todo' },
+    { type: 'running', label: '🏃 Carrera' },
+    { type: 'walking', label: '🚶 Caminar' },
+    { type: 'cycling', label: '🚴 Ciclismo' },
+    { type: 'moto', label: '🏎️  Motorsport 🏍️' }
+  ];
+  wrap.innerHTML = btns.map(function(b) {
+    return '<button class="connector-type-btn' + (!_connectorTypeFilter && !b.type || _connectorTypeFilter === b.type ? ' active' : '') + '" data-type="' + b.type + '" onclick="_setConnectorTypeFilter(\'' + b.type + '\')">' + b.label + '</button>';
+  }).join('');
+}
+
 function _connectorTypeMatch(a) {
   if (!_connectorTypeFilter) return true;
   var t = (a.activityType || '').replace(/_v\d+$/i, '');
   if (_connectorTypeFilter === 'running') return !!_RUNNING_TYPES[t];
+  if (_connectorTypeFilter === 'walking') return !!_WALKING_TYPES[t];
   if (_connectorTypeFilter === 'cycling') return !!_CYCLING_TYPES[t];
   if (_connectorTypeFilter === 'moto') return !!_MOTO_TYPES[t];
   return true;
@@ -7032,6 +7078,7 @@ function _setConnectorTypeFilter(type) {
 }
 
 function _renderConnectorActs(acts) {
+  _renderConnectorFilterBtns();
   var list = document.getElementById('connector-list');
   if (!acts.length) {
     var msg = (_connectorTypeFilter && _connectorBroadFetching)
@@ -7159,7 +7206,7 @@ function _ensurePanels() {
     s.innerHTML='<div style="max-width:500px;margin:40px auto;background:#1a1c23;border-radius:10px;padding:24px">'
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">'
       +'<span style="font-size:15px;font-weight:700;color:#eaeaea">Ajustes</span>'
-      +'<button onclick="closeSettings()" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer">✕</button></div>'
+      +'<button onclick="closeSettings()" style="background:none;border:none;color:#aaa;font-size:20px;cursor:pointer">✕</button></div>'
       +'<div style="margin-bottom:14px"><div style="font-size:12px;color:#8890a0;margin-bottom:4px">Nombre de usuario</div>'
       +'<input id="cfg-username" type="text" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:13px;box-sizing:border-box" placeholder="Tu nombre de usuario en el servidor"></div>'
       +'<div style="margin-bottom:14px"><div style="font-size:12px;color:#8890a0;margin-bottom:4px">URL del servidor</div>'
@@ -7178,7 +7225,7 @@ function _ensurePanels() {
     c.innerHTML='<div style="max-width:600px;margin:40px auto;background:#1a1c23;border-radius:10px;padding:20px">'
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'
       +'<span style="font-size:15px;font-weight:700;color:#eaeaea">Actividades</span>'
-      +'<button onclick="closeConnectorPanel()" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer">✕</button></div>'
+      +'<button onclick="closeConnectorPanel()" style="background:none;border:none;color:#aaa;font-size:20px;cursor:pointer">✕</button></div>'
       +'<div id="connector-search-wrap" style="display:block;margin-bottom:12px">'
       +'<input id="connector-search" type="text" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid #2a2d35;background:#0d0e12;color:#eaeaea;font-size:13px;box-sizing:border-box" placeholder="Buscar actividad…" oninput="_filterConnectorActivities()"></div>'
       +'<div id="connector-date-wrap" style="display:none;margin-bottom:12px">'
@@ -7199,12 +7246,34 @@ function openConnectorPanel() {
   const dateWrap = document.getElementById('connector-date-wrap');
   overlay.style.display = 'block';
 
+  // Añadir botón Login si no existe
+  if (!document.getElementById('connector-login-link')) {
+    var _hdr = overlay.querySelector('div[style*="justify-content"][style*="space-between"]');
+    var _close = _hdr && _hdr.querySelector('button');
+    if (_close) {
+      var _lk = document.createElement('a');
+      _lk.id = 'connector-login-link';
+      _lk.href = '#';
+      _lk.target = '_blank';
+      _lk.onclick = function() { _openConnectorLogin(); return false; };
+      _setConnectorLoginState(_connectorLoginState);
+      var _wrap = document.createElement('div');
+      _wrap.style.cssText = 'display:flex;align-items:center;gap:6px';
+      _hdr.removeChild(_close);
+      _wrap.appendChild(_lk);
+      _wrap.appendChild(_close);
+      _hdr.appendChild(_wrap);
+    }
+  }
+
   const typeFilter = document.getElementById('connector-type-filter');
+  const loginLink = document.getElementById('connector-login-link');
   const base = _getConnectorUrl();
   if (!base) {
     searchWrap.style.display = 'none';
     if (typeFilter) typeFilter.style.display = 'none';
     if (dateWrap) dateWrap.style.display = 'none';
+    if (loginLink) loginLink.style.display = 'none';
     list.innerHTML = '<div style="padding:20px 18px;font-size:12px;color:#8890a0;line-height:1.9">'
       + '<b style="color:#eaeaea;font-size:13px">Conector no configurado</b><br><br>'
       + 'Pulsa <b style="color:#ccc">⚙ Configurar</b> e introduce:<br>'
@@ -7215,6 +7284,7 @@ function openConnectorPanel() {
       + 'o en local (<code style="color:#666">http://localhost:8000</code>).</span></div>';
     return;
   }
+  if (loginLink) { loginLink.style.display = ''; _setConnectorLoginState(_connectorLoginState); }
   if (dateWrap) dateWrap.style.display = 'flex';
 
   // Mostrar cache inmediatamente si existe; refrescar en background
@@ -7245,8 +7315,17 @@ function _connectorStartupPrefetch() {
   var SIN = {strength_training:1,yoga:1,pilates:1,flexibility:1,breathwork:1,meditation:1};
   _connectorRecentFetching = true;
   // Primero carga las 30 recientes; cuando terminan, arranca el amplio (500) en background
-  fetch(base + '/activities?limit=30')
-    .then(function(r) { return r.json(); })
+   fetch(base + '/activities?limit=30')
+    .then(function(r) {
+      if (!r.ok) return r.json().then(function(body) {
+        var msg = body.error || ('HTTP ' + r.status);
+        var err = new Error(msg);
+        err.fix = body.fix || '';
+        throw err;
+      });
+      _setConnectorLoginState('active');
+      return r.json();
+    })
     .then(function(data) {
       _connectorActs = (data.activities || []).filter(function(a) { return !SIN[a.activityType]; });
       _connectorRecentReady = true;
@@ -7265,7 +7344,16 @@ function _connectorStartupPrefetch() {
       }
       _prefetchConnectorBroad();
     })
-    .catch(function() { _connectorRecentFetching = false; });
+    .catch(function(err) {
+      _connectorRecentFetching = false;
+      if (err.fix) _setConnectorLoginState('relogin');
+      var _ov = document.getElementById('connector-overlay');
+      var list = document.getElementById('connector-list');
+      if (_ov && _ov.style.display !== 'none' && list) {
+        var fixHtml = err.fix ? '<div style="margin-top:8px;color:#f2c94c;font-size:11px">' + err.fix + '</div>' : '';
+        list.innerHTML = '<div style="padding:16px 18px;color:#e74c3c;font-size:12px">Error: ' + err.message + fixHtml + _connectorLoginHtml() + '</div>';
+      }
+    });
 }
 
 function _prefetchConnectorBroad() {
@@ -7274,7 +7362,16 @@ function _prefetchConnectorBroad() {
   if (!base) return;
   _connectorBroadFetching = true;
   fetch(base + '/activities?limit=500')
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+      if (!r.ok) return r.json().then(function(body) {
+        var msg = body.error || ('HTTP ' + r.status);
+        var err = new Error(msg);
+        err.fix = body.fix || '';
+        throw err;
+      });
+      _setConnectorLoginState('active');
+      return r.json();
+    })
     .then(function(data) {
       var SIN = {strength_training:1,yoga:1,pilates:1,flexibility:1,breathwork:1,meditation:1};
       _connectorBroadActs = (data.activities || []).filter(function(a) { return !SIN[a.activityType]; });
@@ -7282,7 +7379,16 @@ function _prefetchConnectorBroad() {
       _saveConnectorBroadCache(_connectorBroadActs);
       if (_connectorTypeFilter) _filterConnectorActivities();
     })
-    .catch(function() { _connectorBroadFetching = false; });
+    .catch(function(err) {
+      _connectorBroadFetching = false;
+      if (err.fix) _setConnectorLoginState('relogin');
+      // mostrar error silencioso solo si no hay datos en absoluto
+      var list = document.getElementById('connector-list');
+      if (list && !_connectorActs) {
+        var fixHtml = err.fix ? '<div style="margin-top:8px;color:#f2c94c;font-size:11px">' + err.fix + '</div>' : '';
+        list.innerHTML = '<div style="padding:16px 18px;color:#e74c3c;font-size:12px">Error: ' + err.message + fixHtml + _connectorLoginHtml() + '</div>';
+      }
+    });
 }
 
 function _loadConnectorByDate() {
@@ -7333,9 +7439,11 @@ function _loadConnectorByDate() {
     .then(function(r) {
       if (!r.ok) return r.json().then(function(body) {
         var msg = body.error || ('HTTP ' + r.status);
-        var fix = body.fix ? '<div style="margin-top:8px;color:#f2c94c;font-size:11px">' + body.fix + '</div>' : '';
-        throw new Error(msg + fix);
+        var err = new Error(msg);
+        err.fix = body.fix || '';
+        throw err;
       });
+      _setConnectorLoginState('active');
       return r.json();
     })
     .then(function(data) {
@@ -7353,7 +7461,9 @@ function _loadConnectorByDate() {
       _renderConnectorActs(_connectorActs.filter(_connectorTypeMatch));
     })
     .catch(function(err) {
-      list.innerHTML = '<div style="padding:16px 18px;color:#e74c3c;font-size:12px">Error: ' + err.message + '</div>';
+      if (err.fix) _setConnectorLoginState('relogin');
+      var fixHtml = err.fix ? '<div style="margin-top:8px;color:#f2c94c;font-size:11px">' + err.fix + '</div>' : '';
+      list.innerHTML = '<div style="padding:16px 18px;color:#e74c3c;font-size:12px">Error: ' + err.message + fixHtml + _connectorLoginHtml() + '</div>';
     });
 }
 
@@ -7549,6 +7659,7 @@ function settingsSave() {
 
   if (server) {
     localStorage.setItem(CONNECTOR_URL_KEY, server);
+    _connectorLoginState = 'unknown';
     if (username) {
       _saveAlias(username, server, drive);
       localStorage.setItem(CONNECTOR_USER_KEY, username);
@@ -7666,7 +7777,7 @@ function settingsImport(file) {
     try{
       var data=JSON.parse(e.target.result);
       if(!data||!data.version) throw new Error('Fichero no válido');
-      if(data.server) localStorage.setItem(CONNECTOR_URL_KEY,data.server);
+      if(data.server) { localStorage.setItem(CONNECTOR_URL_KEY,data.server); _connectorLoginState = 'unknown'; }
       if(data.user) localStorage.setItem(CONNECTOR_USER_KEY,data.user);
       if(data.drive) localStorage.setItem(DRIVE_UPLOAD_URL_KEY,data.drive);
       if(data.aliases) localStorage.setItem(CONNECTOR_ALIASES_KEY,JSON.stringify(data.aliases));
@@ -10030,7 +10141,7 @@ if (document.readyState === 'loading') {
         .then(function(r){return r.json();})
         .then(function(data){
           if(data.error) return;
-          if(data.server) localStorage.setItem(CONNECTOR_URL_KEY,data.server);
+          if(data.server) { localStorage.setItem(CONNECTOR_URL_KEY,data.server); _connectorLoginState = 'unknown'; }
           if(data.user) localStorage.setItem(CONNECTOR_USER_KEY,data.user);
           if(data.drive) localStorage.setItem(DRIVE_UPLOAD_URL_KEY,data.drive);
           if(data.aliases) localStorage.setItem(CONNECTOR_ALIASES_KEY,JSON.stringify(data.aliases));
